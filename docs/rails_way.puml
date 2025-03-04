@@ -1,0 +1,22 @@
+@startuml
+actor User
+
+participant "Routing" as Routing
+participant "Controller" as Controller
+participant "BusinessLogic" as BusinessLogic
+participant "Model" as Model
+participant "Serializer" as Serializer
+
+User -> Routing: HTTP Request (GET /books/2)
+Routing -> Controller: Routes to BooksController#index(page=2)
+
+Controller -> BusinessLogic: Fetch books for page 2
+BusinessLogic -> Model: Query books (limit, offset)
+Model --> BusinessLogic: Returns book records
+BusinessLogic --> Controller: Processed book data
+
+Controller -> Serializer: Serialize books
+Serializer --> Controller: JSON data
+Controller --> User: HTTP Response (JSON)
+
+@enduml
