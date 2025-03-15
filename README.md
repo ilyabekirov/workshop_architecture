@@ -113,3 +113,8 @@ docker compose exec -it web bundle exec rails c
 ```bash
 AdminUser.create!(email: 'igor@softtime.ru', password: '...')
 ```
+
+# Переиндексация:
+```bash
+docker-compose exec web bundle exec rake elasticsearch:reindex_books
+```

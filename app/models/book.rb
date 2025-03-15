@@ -1,5 +1,6 @@
 class Book < ApplicationRecord
   include Ransackable
+  include Searchkickable
 
   has_many :books_authors, dependent: :destroy
   has_many :authors, through: :books_authors
@@ -23,4 +24,18 @@ class Book < ApplicationRecord
                      published_at updated_at created_at]
   RANSACK_ASSOCIATIONS = %w[authors books_authors books_genres books_keywords
                             folder genres keywords language]
+
+  def search_data
+    Elasticsearch::SearchDataFormatter.new(self).format(
+      title: :title,
+      libid: :libid,
+      size: :size,
+      filename: :filename,
+      folder_id: :folder_id,
+      language_id: :language_id,
+      author_names: { relation: :authors, attributes: %i[first_name last_name] },
+      genre_names: { relation: :genres, attributes: :name },
+      keyword_names: { relation: :keywords, attributes: :name }
+    )
+  end
 end

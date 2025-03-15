@@ -5,6 +5,8 @@ gem 'puma', '>= 6.5.0'
 
 # Базы данных
 gem 'pg'
+gem 'searchkick'
+gem 'elasticsearch', '~> 8'
 
 # Многопоточное выполнение
 gem 'parallel'
