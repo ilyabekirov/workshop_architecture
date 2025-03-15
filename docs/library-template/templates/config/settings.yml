@@ -1,0 +1,20 @@
+app:
+  items_per_page: 20
+  name: 'like'
+
+rabbitmq:
+  hosts: <%= ENV.fetch('RABBITMQ_HOSTS', 'localhost').split(',') %>
+  port: <%= ENV.fetch('RABBITMQ_PORT', '5672') %>
+  vhost: <%= ENV.fetch('RABBITMQ_VHOST', '/') %>
+  user: <%= ENV.fetch('RABBITMQ_USER', 'guest') %>
+  password: <%= ENV.fetch('RABBITMQ_PASSWORD', 'guest') %>
+  heartbeat_interval: <%= ENV.fetch('RABBITMQ_HEARTBEAT_INTERVAL') { 60 } %>
+  exchange: <%= ENV.fetch('RABBITMQ_EXCHANGE', 'services') %>
+  exchange_type: <%= ENV.fetch('RABBITMQ_EXCHANGE_TYPE', 'topic') %>
+
+sneakers:
+  workers: <%= ENV.fetch('SNEAKERS_WORKERS') { 1 } %>
+  threads: <%= ENV.fetch('SNEAKERS_THREADS') { 1 } %>
+  queue: <%= ENV.fetch('SNEAKERS_QUEUE') { 'like_in' } %>
+  health_check_lifetime: 60
+  amqp_stub: <%= ENV.fetch('SNEAKERS_AMQP_STUB') { false } %>

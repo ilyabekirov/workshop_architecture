@@ -1,0 +1,70 @@
+require:
+  - rubocop-performance
+  - rubocop-rails
+  - rubocop-rspec
+
+Rails:
+  Enabled: true
+
+Rails/FilePath:
+  EnforcedStyle: arguments
+
+Style/Documentation:
+  Enabled: false
+
+Layout/LineLength:
+  AutoCorrect: true
+  Max: 100
+
+Style/FrozenStringLiteralComment:
+  Enabled: false
+
+Style/RescueStandardError:
+  Enabled: false
+
+Style/AsciiComments:
+  Enabled: false
+
+Metrics/BlockLength:
+  Exclude:
+    - 'Rakefile'
+    - '**/*.rake'
+    - 'spec/**/*'
+
+Rails/HttpPositionalArguments:
+  Exclude:
+    - 'spec/**/*'
+
+AllCops:
+  Exclude:
+    - 'tmp/**/*'
+    - 'db/**/*'
+    - 'bin/**/*'
+    - 'lib/tasks/sneakers.rake'
+    - 'vendor/bundle/**/*'
+  NewCops: enable
+
+# if else by tab
+Layout/EndAlignment:
+  EnforcedStyleAlignWith: variable
+# кол-во expect в блоке it или specify
+RSpec/MultipleExpectations:
+  Max: 5
+# кол-во строк в блоке it или specify
+RSpec/ExampleLength:
+  Max: 10
+# использование allow_any_instance_of
+RSpec/AnyInstance:
+  Enabled: false
+# use have_received
+RSpec/MessageSpies:
+  EnforcedStyle: have_received
+# кол-во вложенных контекстов
+RSpec/NestedGroups:
+  Max: 5
+Style/RedundantFetchBlock:
+  Enabled: false
+Rails/UnknownEnv:
+  Enabled: false
+Style/HashSyntax:
+  Enabled: false

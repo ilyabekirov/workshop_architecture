@@ -1,0 +1,5 @@
+---
+ru:
+  active_admin:
+    dashboard: Главная страница
+    rabbit_messages: RM-сообщения

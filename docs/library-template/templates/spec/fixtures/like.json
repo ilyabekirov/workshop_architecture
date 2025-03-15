@@ -1,0 +1,11 @@
+{
+  "id": "d8560533-9d18-44e1-9fdd-4672c6a39e6c",
+  "from": "rake",
+  "action": "like",
+  "params": {
+    "id": "d8560533-9d18-44e1-9fdd-4672c6a39e6c",
+    "action": "like",
+    "folder": "f.fb2-440801-444899.zip",
+    "book": "440905"
+  }
+}

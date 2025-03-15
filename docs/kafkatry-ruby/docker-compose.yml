@@ -1,0 +1,85 @@
+x-server-volumes:
+  &server-volumes
+  - .:/app
+  - vendor_bundle:/app/vendor/bundle
+  - ~/.bash_history:/root/.bash_history
+  - ~/.irbrc:/root/.irbrc
+
+x-base-service: &base-service
+  build:
+    context: .
+    dockerfile: Dockerfile
+  image: ruby-karafka
+  environment:
+    KARAFKA_BOOT_FILE: '/app/config/karafka.rb'
+    APP_HOST: ${APP_HOST}
+    KAFKATRY_DATABASE_PASSWORD: ${KAFKATRY_DATABASE_PASSWORD}
+  volumes: *server-volumes
+  stdin_open: true
+  tty: true
+
+services:
+  redpanda:
+    image: redpandadata/redpanda
+    command:
+      - redpanda start
+      - --smp 1
+      - --overprovisioned
+      - --node-id 0
+      - --kafka-addr PLAINTEXT://0.0.0.0:29092,OUTSIDE://0.0.0.0:9092
+      - --advertise-kafka-addr PLAINTEXT://redpanda:29092,OUTSIDE://redpanda:9092
+      - --pandaproxy-addr 0.0.0.0:8082
+      - --advertise-pandaproxy-addr redpanda:8082
+    ports:
+      - 8081:8081
+      - 8082:8082
+      - 9092:9092
+      - 29092:29092
+
+  console:
+    image: docker.redpanda.com/redpandadata/console
+    restart: on-failure
+    entrypoint: /bin/sh
+    command: -c "echo \"$$CONSOLE_CONFIG_FILE\" > /tmp/config.yml; /app/console"
+    environment:
+      CONFIG_FILEPATH: /tmp/config.yml
+      CONSOLE_CONFIG_FILE: |
+        kafka:
+          brokers: ["redpanda:29092"]
+          schemaRegistry:
+            enabled: true
+            urls: ["http://redpanda:8081"]
+        connect:
+          enabled: true
+          clusters:
+            - name: datagen
+              url: http://connect:8083
+    ports:
+      - 8080:8080
+    depends_on:
+      - redpanda
+
+  server:
+    <<: *base-service
+    command: bash -c "rm -f tmp/pids/server.pid && bundle exec rails s -p 3000 -b '0.0.0.0'"
+    depends_on:
+      - db
+    ports:
+      - 3000:3000
+
+  karafka:
+    <<: *base-service
+    command: bundle exec karafka server
+
+  db:
+    image: postgres:13.4
+    environment:
+      POSTGRESQL_DATABASE: kafkatry_development
+      POSTGRESQL_USERNAME: postgres
+      POSTGRES_PASSWORD: ${KAFKATRY_DATABASE_PASSWORD}
+    ports:
+      - 5432:5432
+
+volumes:
+  vendor_bundle:
+    driver: local
